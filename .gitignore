@@ -1,0 +1,26 @@
+# General
+.env
+.env.* 
+node_modules/
+uploads/
+*.log
+
+# Docker
+*.local
+docker-compose.override.yml
+
+# Microservicios específicos
+auth-service/node_modules/
+user-service/node_modules/
+api-gateway/node_modules/
+auth-service/uploads/
+user-service/uploads/
+api-gateway/uploads/
+
+# Sistema
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
