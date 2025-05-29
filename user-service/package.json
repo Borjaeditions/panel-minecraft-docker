@@ -1,0 +1,52 @@
+{
+  "service": "user-service",
+  "structure": [
+    "user-service/",
+    "user-service/src/",
+    "user-service/src/routes/",
+    "user-service/src/controllers/",
+    "user-service/src/models/",
+    "user-service/src/db.js",
+    "user-service/src/index.js",
+    "user-service/package.json",
+    "user-service/Dockerfile"
+  ],
+  "dockerfile": {
+    "FROM": "node:20",
+    "WORKDIR": "/app",
+    "COPY": [
+      "package*.json ./",
+      "./ ./"
+    ],
+    "RUN": "npm install",
+    "EXPOSE": "3000",
+    "CMD": "npm run dev"
+  },
+  "package.json": {
+    "name": "user-service",
+    "version": "1.0.0",
+    "main": "src/index.js",
+    "scripts": {
+      "dev": "nodemon src/index.js"
+    },
+    "dependencies": {
+      "express": "^4.18.2",
+      "mongoose": "^7.6.1",
+      "dotenv": "^16.3.1",
+      "cors": "^2.8.5"
+    },
+    "devDependencies": {
+      "nodemon": "^3.1.0"
+    }
+  },
+  "name": "user-service",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}

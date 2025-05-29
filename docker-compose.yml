@@ -1,0 +1,36 @@
+services:
+  auth-service:
+    build: ./auth-service
+    ports:
+      - "4000:3000"
+    volumes:
+      - ./auth-service:/app
+      - /app/node_modules
+    networks:
+      - backend
+  api-gateway:
+    build: ./api-gateway
+    ports:
+      - "4001:3000"
+    volumes:
+      - ./api-gateway:/app
+      - /app/node_modules
+    networks:
+      - backend
+    depends_on:
+      - auth-service
+
+  mongo:
+    image: mongo
+    ports:
+      - "27018:27017"
+    networks:
+      - backend
+    volumes:
+      - mongo_data:/data/db      
+
+networks:
+  backend:
+
+volumes:
+  mongo_data:
