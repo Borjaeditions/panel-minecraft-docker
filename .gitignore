@@ -4,6 +4,7 @@
 node_modules/
 uploads/
 *.log
+*.zip
 
 # Docker
 *.local
