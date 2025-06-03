@@ -1,0 +1,43 @@
+[
+  {
+    "name": "Plan ChickenCraft",
+    "key": "chickencraft",
+    "mode": "Survival Vanilla",
+    "ramGB": 2,
+    "playerRange": "5 - 10",
+    "allowMods": false,
+    "allowPlugins": false,
+    "priceMXN": 60
+  },
+  {
+    "name": "Plan Creeper",
+    "key": "creeper",
+    "mode": "Survival Vanilla",
+    "ramGB": 4,
+    "playerRange": "10 - 20",
+    "allowMods": false,
+    "allowPlugins": false,
+    "priceMXN": 90
+  },
+  {
+    "name": "Plan EnderMod",
+    "key": "endermod",
+    "mode": "Survival con Mods",
+    "ramGB": 4,
+    "playerRange": "5 - 10",
+    "allowMods": true,
+    "modsType": "Forge/Fabric",
+    "allowPlugins": false,
+    "priceMXN": 120
+  },
+  {
+    "name": "Plan Herobrine PRO",
+    "key": "herobrinepro",
+    "mode": "Servidor Premium PRO",
+    "ramGB": 8,
+    "playerRange": "30+",
+    "allowMods": true,
+    "allowPlugins": true,
+    "priceMXN": 500
+  }
+]

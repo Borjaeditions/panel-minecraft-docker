@@ -13,6 +13,7 @@ docker-compose.override.yml
 auth-service/node_modules/
 user-service/node_modules/
 api-gateway/node_modules/
+api-gateway/user-service/
 auth-service/uploads/
 user-service/uploads/
 api-gateway/uploads/

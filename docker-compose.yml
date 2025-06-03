@@ -1,3 +1,5 @@
+version: '3.9'
+
 services:
   auth-service:
     build: ./auth-service
@@ -8,6 +10,33 @@ services:
       - /app/node_modules
     networks:
       - backend
+
+  user-service:
+    build: ./user-service
+    ports:
+      - "4002:3000"
+    volumes:
+      - ./user-service:/app
+      - /app/node_modules
+    networks:
+      - backend
+    depends_on:
+      - mongo
+
+  world-service:
+    build: ./world-service
+    ports:
+      - "4003:3000"
+    volumes:
+      - ./world-service:/app
+      - /app/node_modules
+    networks:
+      - backend
+    depends_on:
+      - mongo
+    extra_hosts:
+      - "host.docker.internal:host-gateway"  # útil para conectar con docker-control-service en el host
+
   api-gateway:
     build: ./api-gateway
     ports:
@@ -19,15 +48,17 @@ services:
       - backend
     depends_on:
       - auth-service
+      - user-service
+      - world-service
 
   mongo:
     image: mongo
     ports:
       - "27018:27017"
+    volumes:
+      - mongo_data:/data/db
     networks:
       - backend
-    volumes:
-      - mongo_data:/data/db      
 
 networks:
   backend:
