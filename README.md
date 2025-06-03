@@ -1,117 +1,176 @@
 # 🎮 Minecraft Panel - Plataforma de Administración de Servidores
 
-Este proyecto es una plataforma modular desarrollada con microservicios para administrar servidores de Minecraft de forma eficiente y escalable. Ideal para ofrecer servicios comerciales a múltiples usuarios con autenticación, control de acceso y gestión de mundos.
+Este proyecto es una plataforma modular para administrar servidores de Minecraft. Cada servidor (mundo) es lanzado en un contenedor Docker independiente, controlado a través de microservicios. Los usuarios pueden crear mundos, asignar subdominios personalizados y configurar listas blancas de jugadores.
 
 ---
 
-## 📦 Estructura de Microservicios
+## 📦 Servicios del Proyecto
+
+| Servicio             | Descripción                                               |
+|----------------------|-----------------------------------------------------------|
+| `auth-service`       | Autenticación con JWT (login, refresh token, logout)      |
+| `user-service`       | Manejo de usuarios, fotos de perfil, y plan contratado    |
+| `world-service`      | Creación y administración de mundos Minecraft             |
+| `docker-control-service` | Encargado de levantar/detener contenedores Docker    |
+| `api-gateway`        | Gateway que expone las rutas de todos los servicios       |
+| `mongo`              | Base de datos MongoDB para persistencia (usuarios/mundos) |
+
+---
+
+## 🧠 Arquitectura General
+
+- **Node.js + Express** por microservicio
+- **MongoDB** para almacenar usuarios y mundos
+- **Docker** para contenerización de servicios y mundos Minecraft
+- **API Gateway** para simplificar el consumo desde frontend
+- **Subdominios dinámicos** por mundo, configurables con Cloudflare (futuro)
+- **Control de puertos únicos** para evitar conflictos entre mundos
+- **Whitelist y acceso abierto** configurables por cada mundo
+
+---
+
+## 🚀 Cómo iniciar el proyecto
 
 ```bash
+# Clona el repositorio
+git clone https://github.com/tuusuario/minecraft-panel-modular.git
+cd minecraft-panel-modular
+
+# Levanta los servicios (Linux recomendado)
+docker compose up --build
+```
+
+Requiere tener instalado:
+
+- Docker + Docker Compose
+- Node.js 20+ (para desarrollo local)
+
+---
+
+## 🌍 world-service
+
+### `POST /worlds`
+Crea un nuevo mundo para el usuario autenticado.
+
+**Body JSON**:
+```json
+{
+  "name": "MiPrimerMundo",
+  "planKey": "basic",
+  "whitelist": ["uuid1", "uuid2"],
+  "accessType": "whitelist", // o "public"
+  "allowCracked": true
+}
+```
+
+### `GET /worlds`
+Devuelve todos los mundos del usuario autenticado.
+
+### `PATCH /worlds/:id/access`
+Actualiza el tipo de acceso (whitelist o público).
+
+### `DELETE /worlds/:id`
+Elimina el mundo y su contenedor correspondiente.
+
+---
+
+## 🔐 auth-service
+
+- `POST /login`
+- `POST /refresh-token`
+- `POST /logout`
+
+Autenticación con JWT y refresh token.
+
+---
+
+## 👤 user-service
+
+- `GET /users`
+- `POST /users/photo`
+- Lógica de planes: cada usuario tiene un límite de mundos según el plan.
+
+---
+
+## ⚙️ docker-control-service
+
+API local que ejecuta scripts en el host (fuera de contenedor):
+
+- `POST /containers/start`
+- `DELETE /containers/:subdomain`
+- `POST /containers/:subdomain/whitelist`
+
+Asegura que Node.js no interactúe directamente con Docker desde dentro del contenedor.
+
+---
+
+## 📁 Estructura del proyecto
+
+```
 minecraft-panel/
+├── auth-service/
+├── user-service/
+├── world-service/
+├── docker-control-service/
+├── api-gateway/
 ├── docker-compose.yml
-├── auth-service/         # Servicio de autenticación con JWT y Refresh Token
-├── user-service/         # Gestión de usuarios con CRUD y subida de foto de perfil
-├── api-gateway/          # Gateway para enrutamiento centralizado de los microservicios
-└── mongo/                # Base de datos MongoDB (contenedor)
+└── README.md
 ```
 
 ---
 
-## 🚀 Tecnologías
+## ✨ Planes disponibles (plans.json)
 
-- **Node.js** + **Express**
-- **MongoDB** con Mongoose
-- **JWT** para autenticación segura
-- **Multer** para manejo de archivos (foto de perfil)
-- **Docker + Docker Compose**
-- **Postman** para pruebas de endpoints
-
----
-
-## 🔧 Instrucciones de Uso
-
-### 1. Clonar repositorio
-
-```bash
-git clone https://github.com/TU-USUARIO/minecraft-panel.git
-cd minecraft-panel
-```
-
-### 2. Configura variables de entorno
-
-Crea un archivo `.env` dentro de cada microservicio con las siguientes variables:
-
-#### auth-service/.env
-
-```
-PORT=3000
-JWT_SECRET=tu_clave_secreta
-JWT_REFRESH_SECRET=tu_refresh_clave
-MONGO_URI=mongodb://mongo:27017/minecraft-auth
-```
-
-#### user-service/.env
-
-```
-PORT=3000
-MONGO_URI=mongodb://mongo:27017/minecraft-users
-```
-
-#### api-gateway/.env
-
-```
-PORT=3000
-AUTH_SERVICE_URL=http://auth-service:3000
-USER_SERVICE_URL=http://user-service:3000
+```json
+[
+  {
+    "key": "basic",
+    "name": "Plan Básico",
+    "playerRange": "5+",
+    "ramGB": 2,
+    "allowMods": false,
+    "allowPlugins": false,
+    "mode": "survival"
+  },
+  {
+    "key": "pro",
+    "name": "Plan Pro",
+    "playerRange": "10+",
+    "ramGB": 4,
+    "allowMods": true,
+    "allowPlugins": true,
+    "mode": "creative"
+  }
+]
 ```
 
 ---
 
-### 3. Construir y levantar servicios
+## 🌐 Subdominios
 
-```bash
-docker-compose up --build
-```
-
-Los servicios se expondrán así:
-
-- **Auth Service:** http://localhost:4000
-- **User Service:** http://localhost:4002 (ajústalo si cambias)
-- **API Gateway:** http://localhost:4001
-
----
-
-## 🔐 Endpoints Clave
-
-- `POST /auth/register` – Registro de usuarios
-- `POST /auth/login` – Login y obtención de token
-- `POST /auth/refresh` – Refresh del JWT
-- `POST /auth/logout` – Logout
-
-- `GET /users` – Listar usuarios
-- `PUT /users/:id` – Actualizar (incluye subida de foto)
-- `DELETE /users/:id` – Eliminar usuario
-
-Accede a través del `api-gateway` con prefijos como `/api/auth`, `/api/users`, etc.
-
----
-
-## 📁 Subida de Fotos
-
-En el endpoint `PUT /users/:id`, puedes enviar un `form-data` con el campo `fotoPerfil` (imagen).
+Cada mundo generado obtiene un subdominio único. En producción, se vinculará con la API de Cloudflare para exponerlo públicamente mediante HTTPS (Cloudflare Tunnel u Nginx).
 
 ---
 
 ## 🛡️ Seguridad
 
-- JWT de acceso y refresh
-- Validación de usuario autenticado
-- Pruebas con Postman disponibles
+- Sanitización de entradas para evitar inyecciones
+- Validación de UUIDs en whitelist
+- Control de acceso basado en JWT
+- Puertos únicos por mundo (con asignación y liberación automática)
 
 ---
 
-## 🧠 Autor
+## 📌 Próximos pasos
 
-Desarrollado por **Alejandro Borja Hernández**
+- Interfaz web (frontend Angular o React)
+- Configuración automática de subdominios con Cloudflare
+- Panel de administración
+- Soporte para backups y restauración de mundos
+- Gestión de mods/plugins desde el frontend
 
-> 💻 Proyecto en desarrollo con enfoque comercial para gestión de servidores Minecraft.
+---
+
+## 👨‍💻 Autor
+
+Alejandro Borja Hernández – [borjaeditions.com](https://borjaeditions.com)
