@@ -18,15 +18,15 @@ router.post('/register', async (req, res) => {
 });
 
 router.post('/login', async (req, res) => {
-  const { username, password } = req.body;
-  const user = await User.findOne({ username });
+  const { email, password } = req.body;
+  const user = await User.findOne({ email });
   if (!user) return res.status(401).json({ error: 'Usuario no encontrado' });
 
   const valid = await bcrypt.compare(password, user.password);
   if (!valid) return res.status(401).json({ error: 'Contraseña incorrecta' });
 
-  const token = jwt.sign({ id: user._id, username: user.username }, process.env.JWT_SECRET, { expiresIn: '1h' });
-  const refreshToken = jwt.sign({ id: user._id, username: user.username }, process.env.JWT_SECRET, { expiresIn: '7d' });
+  const token = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
+  const refreshToken = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, { expiresIn: '7d' });
   res.json({ token, refreshToken });
 });
 
@@ -40,6 +40,24 @@ router.get('/verify', (req, res) => {
     res.json({ valid: true, user: decoded });
   } catch (err) {
     res.status(401).json({ error: 'Token inválido o expirado' });
+  }
+});
+router.post('/profile-image', verifyToken, upload.single('image'), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: 'No se subió ninguna imagen' });
+    }
+
+    // Guardamos la ruta relativa (puedes cambiarla a URL pública si usas dominio)
+    const imagePath = `/uploads/${req.file.filename}`;
+
+    const user = await User.findByIdAndUpdate(req.userId, { profileImage: imagePath }, { new: true });
+    if (!user) return res.status(404).json({ message: 'Usuario no encontrado' });
+
+    res.json({ message: 'Imagen actualizada', profileImage: imagePath });
+  } catch (err) {
+    console.error('Error al subir imagen:', err);
+    res.status(500).json({ message: 'Error del servidor' });
   }
 });
 router.post('/refresh', (req, res) => {

@@ -1,13 +1,8 @@
-version: '3.9'
-
 services:
   auth-service:
     build: ./auth-service
     ports:
       - "4000:3000"
-    volumes:
-      - ./auth-service:/app
-      - /app/node_modules
     networks:
       - backend
 
@@ -15,35 +10,28 @@ services:
     build: ./user-service
     ports:
       - "4002:3000"
-    volumes:
-      - ./user-service:/app
-      - /app/node_modules
     networks:
       - backend
     depends_on:
       - mongo
+    volumes:
+      - /home/borjaeditions/servicios_b/panel_minecraft/uploads
 
   world-service:
     build: ./world-service
     ports:
       - "4003:3000"
-    volumes:
-      - ./world-service:/app
-      - /app/node_modules
     networks:
       - backend
     depends_on:
       - mongo
     extra_hosts:
-      - "host.docker.internal:host-gateway"  # útil para conectar con docker-control-service en el host
+      - "host.docker.internal:host-gateway"
 
   api-gateway:
     build: ./api-gateway
     ports:
       - "4001:3000"
-    volumes:
-      - ./api-gateway:/app
-      - /app/node_modules
     networks:
       - backend
     depends_on:

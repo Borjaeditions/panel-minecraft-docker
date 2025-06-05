@@ -9,6 +9,7 @@ const fs = require('fs');
 const path = require('path');
 const bcrypt = require('bcryptjs');
 
+
 // Configuración de multer
 const storage = multer.diskStorage({
   destination: 'uploads/',
@@ -61,6 +62,21 @@ router.get('/:id/foto', verifyToken, async (req, res) => {
     res.status(500).json({ message: 'Error al obtener la foto' });
   }
 });
+
+// Obtiene los datos del usuario autenticado
+router.get('/me', verifyToken, async (req, res) => {
+  try {
+    const user = await User.findById(req.userId).select('-password');
+    if (!user) return res.status(404).json({ message: 'Usuario no encontrado' });
+
+    res.json(user);
+  } catch (err) {
+    console.error('Error en /me:', err.message);
+    res.status(500).json({ message: 'Error del servidor' });
+  }
+});
+
+
 
 /**
  * PUT /users/me - Editar perfil autenticado
