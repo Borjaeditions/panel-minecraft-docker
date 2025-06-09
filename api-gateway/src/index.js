@@ -1,6 +1,6 @@
 // src/index.js
-const app = express();
 const express = require('express');
+const app = express();
 const authRoutes = require('./routes/auth');
 const { createProxyMiddleware } = require('http-proxy-middleware');
 
