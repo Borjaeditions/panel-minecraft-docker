@@ -1,6 +1,11 @@
 FROM node:20
+
 WORKDIR /app
+
+COPY package*.json ./
+RUN npm install --include=optional
+
 COPY . .
-RUN npm ci --omit=dev
+
 EXPOSE 3000
 CMD ["npm", "start"]

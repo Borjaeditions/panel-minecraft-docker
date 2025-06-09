@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User.js');
 
 const router = express.Router();
+const verifyToken = require('../middleware/verifyToken');
 
 router.post('/register', async (req, res) => {
   const { username, password, email } = req.body;

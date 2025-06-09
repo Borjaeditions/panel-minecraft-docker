@@ -17,9 +17,6 @@ mongoose.connect(process.env.MONGO_URI)
   })
   .catch(err => console.error(err))
 
-// world-service/src/models/World.js
-const mongoose = require('mongoose')
-
 const worldSchema = new mongoose.Schema({
   name: String,
   owner: mongoose.Schema.Types.ObjectId,
