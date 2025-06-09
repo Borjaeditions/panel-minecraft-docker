@@ -10,7 +10,7 @@ app.use('/users', createProxyMiddleware({
   pathRewrite: { '^/users': '' }
 }));
 
-app.use(app.json());
+app.use(express.json());
 
 app.use('/auth', authRoutes);
 
