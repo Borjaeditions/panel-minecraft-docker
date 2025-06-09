@@ -1,5 +1,4 @@
 // src/index.js
-const express = require('express');
 const app = express();
 const authRoutes = require('./routes/auth');
 const verifyToken = require('./middleware/verifyToken');
@@ -48,7 +47,7 @@ module.exports = function (req, res, next) {
 };
 
 // src/routes/auth.js
-const express = require('express');
+const app = require('express');
 const router = express.Router();
 const axios = require('axios');
 

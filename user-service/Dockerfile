@@ -3,7 +3,9 @@ FROM node:20
 WORKDIR /app
 
 COPY package*.json ./
-RUN npm install --include=optional
+
+RUN apt-get update && apt-get install -y libvips-dev \
+ && npm install --include=optional
 
 COPY . .
 
