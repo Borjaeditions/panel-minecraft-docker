@@ -1,5 +1,5 @@
 // src/models/World.js
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 
 const worldSchema = new mongoose.Schema({
   name: String,
@@ -8,7 +8,7 @@ const worldSchema = new mongoose.Schema({
   subdomain: {
     type: String,
     unique: true,
-    sparse: true // por si aún no se ha asignado al crear
+    sparse: true
   },
   mode: String,
   ramGB: Number,
@@ -27,11 +27,9 @@ const worldSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   }
-})
+});
 
-// Índice único para evitar mundos duplicados por nombre y dueño
-worldSchema.index({ name: 1, owner: 1 }, { unique: true })
-// Índice único para subdominios (global)
-worldSchema.index({ subdomain: 1 }, { unique: true, sparse: true })
+worldSchema.index({ name: 1, owner: 1 }, { unique: true });
+worldSchema.index({ subdomain: 1 }, { unique: true, sparse: true });
 
-module.exports = mongoose.model('World', worldSchema)
+module.exports = mongoose.models.World || mongoose.model('World', worldSchema);
