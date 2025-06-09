@@ -28,4 +28,3 @@ app.listen(PORT, () => {
   console.log(`API Gateway corriendo en puerto ${PORT}`);
 });
 
-module.exports = router;
