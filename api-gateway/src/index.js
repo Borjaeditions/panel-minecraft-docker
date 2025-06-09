@@ -1,8 +1,7 @@
 // src/index.js
 const app = express();
+const express = require('express');
 const authRoutes = require('./routes/auth');
-const verifyToken = require('./middleware/verifyToken');
-
 const { createProxyMiddleware } = require('http-proxy-middleware');
 
 app.use('/users', createProxyMiddleware({
