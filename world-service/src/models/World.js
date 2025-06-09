@@ -29,4 +29,7 @@ const worldSchema = new mongoose.Schema({
   }
 });
 
+worldSchema.index({ name: 1, owner: 1 }, { unique: true });
+worldSchema.index({ subdomain: 1 }, { unique: true, sparse: true });
+
 module.exports = mongoose.models.World || mongoose.model('World', worldSchema);
