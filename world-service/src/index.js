@@ -40,5 +40,3 @@ const worldSchema = new mongoose.Schema({
     default: Date.now
   }
 })
-
-module.exports = mongoose.model('World', worldSchema)
