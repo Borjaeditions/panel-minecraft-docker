@@ -16,9 +16,9 @@ const Log = mongoose.model('Log', LogSchema);
 // Función para consultar información de IP (puede usarse ipinfo.io, ip-api.com, etc.)
 async function obtenerOrigen(ip) {
   try {
-    const res = await axios.get(`http://ip-api.com/json/${ip}`);
-    if (res.data && res.data.country) {
-      return `${res.data.city}, ${res.data.country}`;
+    const res = await axios.get(`https://ipwho.is/${ip}`);
+    if (res.data && res.data.success) {
+    return `${res.data.city}, ${res.data.country}`;
     }
   } catch (err) {
     console.error('Error al obtener ubicación de IP:', err.message);
