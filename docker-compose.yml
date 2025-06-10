@@ -27,8 +27,6 @@ services:
       - mongo
     extra_hosts:
       - "host.docker.internal:host-gateway"
-    env_file:
-      - ./world-service/.env
 
   api-gateway:
     build: ./api-gateway
