@@ -13,8 +13,7 @@ app.use(logAcceso);
 // Rutas proxy
 app.use('/auth', createProxyMiddleware({
   target: 'http://auth-service:3000',
-  changeOrigin: true,
-  pathRewrite: { '^/auth': '' }
+  changeOrigin: true
 }));
 
 app.use('/users', createProxyMiddleware({
