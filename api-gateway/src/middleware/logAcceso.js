@@ -1,7 +1,7 @@
+
 const axios = require('axios');
 const mongoose = require('mongoose');
 
-// Esquema Mongo para logs
 const LogSchema = new mongoose.Schema({
   ip: String,
   ruta: String,
@@ -13,12 +13,11 @@ const LogSchema = new mongoose.Schema({
 
 const Log = mongoose.model('Log', LogSchema);
 
-// Función para consultar información de IP (puede usarse ipinfo.io, ip-api.com, etc.)
 async function obtenerOrigen(ip) {
   try {
     const res = await axios.get(`https://ipwho.is/${ip}`);
     if (res.data && res.data.success) {
-    return `${res.data.city}, ${res.data.country}`;
+      return `${res.data.city}, ${res.data.country}`;
     }
   } catch (err) {
     console.error('Error al obtener ubicación de IP:', err.message);
@@ -26,7 +25,6 @@ async function obtenerOrigen(ip) {
   return 'Desconocido';
 }
 
-// Enviar log a Telegram
 async function enviarLogTelegram(mensaje) {
   const token = process.env.TELEGRAM_BOT_TOKEN;
   const chatId = process.env.TELEGRAM_CHAT_ID;
@@ -43,7 +41,6 @@ async function enviarLogTelegram(mensaje) {
   }
 }
 
-// Middleware
 async function logAcceso(req, res, next) {
   const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
   const ruta = req.originalUrl;
@@ -54,7 +51,7 @@ async function logAcceso(req, res, next) {
   const log = new Log({ ip, ruta, metodo, userAgent, origen });
   await log.save();
 
-  const mensaje = `📡 Acceso:\\nIP: ${ip}\\nRuta: ${metodo} ${ruta}\\nUbicación: ${origen}`;
+  const mensaje = `📡 Acceso:\nIP: ${ip}\nRuta: ${metodo} ${ruta}\nUbicación: ${origen}`;
   await enviarLogTelegram(mensaje);
 
   next();
