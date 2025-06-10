@@ -2,7 +2,7 @@ services:
   auth-service:
     build: ./auth-service
     ports:
-      - "4000:3000"
+      - "4001:3000"
     networks:
       - backend
 
@@ -31,7 +31,7 @@ services:
   api-gateway:
     build: ./api-gateway
     ports:
-      - "4001:3000"
+      - "4000:3000"
     networks:
       - backend
     depends_on:
