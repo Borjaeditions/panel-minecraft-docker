@@ -3,10 +3,11 @@ const router = express.Router();
 const { upload, saveCompressedImage } = require('../middlewares/upload');
 const verifyToken = require('../middlewares/verifyToken');
 const userController = require('../controllers/userController'); // <- Faltaba esto
+const isAdmin = require('../middlewares/isAdmin');
 
 // Rutas CRUD de usuario protegidas
 router.post('/', verifyToken, userController.crearUsuario);
-router.get('/', verifyToken, userController.obtenerUsuarios);
+router.post('/', verifyToken, isAdmin, userController.crearUsuario);
 router.get('/:id', verifyToken, userController.obtenerUsuarioPorId);
 router.put('/:id', verifyToken, upload.single('fotoPerfil'), userController.actualizarUsuario);
 router.delete('/:id', verifyToken, userController.eliminarUsuario);

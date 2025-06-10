@@ -73,8 +73,15 @@ router.post('/refresh', (req, res) => {
 });
 
 // Logout manual (sin token blacklist)
-router.post('/logout', (req, res) => {
-  res.json({ message: 'Logout exitoso (manual)' });
+router.post('/logout', async (req, res) => {
+  const { refreshToken } = req.body;
+  if (!refreshToken) return res.status(400).json({ error: 'Refresh token requerido' });
+  try {
+    await Token.deleteOne({ refreshToken });
+    res.json({ message: 'Logout exitoso. Token invalidado.' });
+  } catch (err) {
+    res.status(500).json({ error: 'Error al invalidar el token', detail: err.message });
+  }
 });
 
 module.exports = router;
