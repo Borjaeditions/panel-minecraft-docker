@@ -1,3 +1,4 @@
+
 const express = require('express');
 const { createProxyMiddleware } = require('http-proxy-middleware');
 const mongoose = require('mongoose');
@@ -9,7 +10,7 @@ const logAcceso = require('./middleware/logAcceso');
 app.use(express.json());
 app.use(logAcceso);
 
-// Proxy directo a servicios (sin modificar rutas)
+// Proxy directo a servicios sin pathRewrite
 app.use('/auth', createProxyMiddleware({
   target: 'http://auth-service:3000',
   changeOrigin: true
