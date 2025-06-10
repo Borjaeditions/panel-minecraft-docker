@@ -12,19 +12,19 @@ app.use(logAcceso);
 
 // Rutas proxy
 app.use('/auth', createProxyMiddleware({
-  target: 'http://auth-service:4001',
+  target: 'http://auth-service:3000',
   changeOrigin: true,
   pathRewrite: { '^/auth': '' }
 }));
 
 app.use('/users', createProxyMiddleware({
-  target: 'http://user-service:4002',
+  target: 'http://user-service:3000',
   changeOrigin: true,
   pathRewrite: { '^/users': '' }
 }));
 
 app.use('/worlds', createProxyMiddleware({
-  target: 'http://world-service:4003',
+  target: 'http://world-service:3000',
   changeOrigin: true,
   pathRewrite: { '^/worlds': '' }
 }));
