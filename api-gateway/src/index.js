@@ -1,4 +1,3 @@
-
 const express = require('express');
 const { createProxyMiddleware } = require('http-proxy-middleware');
 const mongoose = require('mongoose');
@@ -10,7 +9,7 @@ const logAcceso = require('./middleware/logAcceso');
 app.use(express.json());
 app.use(logAcceso);
 
-// Rutas proxy
+// Proxy directo a servicios (sin modificar rutas)
 app.use('/auth', createProxyMiddleware({
   target: 'http://auth-service:3000',
   changeOrigin: true
@@ -18,20 +17,17 @@ app.use('/auth', createProxyMiddleware({
 
 app.use('/users', createProxyMiddleware({
   target: 'http://user-service:3000',
-  changeOrigin: true,
-  pathRewrite: { '^/users': '' }
+  changeOrigin: true
 }));
 
 app.use('/worlds', createProxyMiddleware({
   target: 'http://world-service:3000',
-  changeOrigin: true,
-  pathRewrite: { '^/worlds': '' }
+  changeOrigin: true
 }));
 
 app.use('/docker', createProxyMiddleware({
   target: 'http://host.docker.internal:5050',
-  changeOrigin: true,
-  pathRewrite: { '^/docker': '' }
+  changeOrigin: true
 }));
 
 // Error 404
