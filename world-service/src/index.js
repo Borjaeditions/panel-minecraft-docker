@@ -16,7 +16,7 @@ mongoose.connect(process.env.MONGO_URI)
   .then(() => {
     console.log('✅ Conectado a MongoDB');
     app.listen(process.env.PORT, () => {
-      console.log(`🌍 World-service corriendo en puerto ${process.env.PORT}`);
+      console.log(`🌍 World-service corriendo en puerto ${process.env.PORT}, externo: 4003`);
     });
   })
   .catch((err) => {

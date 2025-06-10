@@ -12,7 +12,7 @@ app.use(logAcceso);
 
 // Rutas proxy
 app.use('/auth', createProxyMiddleware({
-  target: 'http://auth-service:4000',
+  target: 'http://auth-service:4001',
   changeOrigin: true,
   pathRewrite: { '^/auth': '' }
 }));
@@ -44,8 +44,8 @@ app.use((req, res) => {
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
     console.log('✅ Conectado a MongoDB para logs');
-    const PORT = process.env.PORT || 4001;
-    app.listen(PORT, () => console.log(`🌐 API Gateway escuchando en el puerto ${PORT}`));
+    const PORT = process.env.PORT || 3000;
+    app.listen(PORT, () => console.log(`🌐 API Gateway escuchando en el puerto ${PORT} externo 4000`));
   })
   .catch((err) => {
     console.error('❌ Error al conectar a MongoDB para logs:', err.message);
