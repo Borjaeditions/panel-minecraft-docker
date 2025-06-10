@@ -2,6 +2,18 @@
 const express = require('express');
 const { createProxyMiddleware } = require('http-proxy-middleware');
 const app = express();
+const rateLimit = require('express-rate-limit');
+const logAcceso = require('./middleware/logAcceso');
+
+const limiter = rateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minuto
+  max: 100, // Máximo 100 peticiones por IP
+  message: 'Demasiadas solicitudes, intenta más tarde.'
+});
+
+app.use(limiter);
+app.use(logAcceso);
+
 
 app.use(express.json());
 
