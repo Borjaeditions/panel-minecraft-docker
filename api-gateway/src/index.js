@@ -1,4 +1,3 @@
-
 const express = require('express');
 const { createProxyMiddleware } = require('http-proxy-middleware');
 const mongoose = require('mongoose');
@@ -10,33 +9,41 @@ const logAcceso = require('./middleware/logAcceso');
 app.use(express.json());
 app.use(logAcceso);
 
-// Proxy directo a servicios sin pathRewrite
-app.use('/auth', createProxyMiddleware({
-  target: 'http://auth-service:3000',
-  changeOrigin: true
-}));
+// 🔁 Tabla de rutas y destinos internos
+const services = [
+  {
+    route: '/auth',
+    target: 'http://auth-service:3000'
+  },
+  {
+    route: '/users',
+    target: 'http://user-service:3000'
+  },
+  {
+    route: '/worlds',
+    target: 'http://world-service:3000'
+  },
+  {
+    route: '/docker',
+    target: 'http://host.docker.internal:5050'
+  }
+];
 
-app.use('/users', createProxyMiddleware({
-  target: 'http://user-service:3000',
-  changeOrigin: true
-}));
+// 🔄 Registrar todas las rutas dinámicamente
+services.forEach(({ route, target }) => {
+  app.use(route, createProxyMiddleware({
+    target,
+    changeOrigin: true,
+    pathRewrite: (path, req) => path.replace(route, '')
+  }));
+});
 
-app.use('/worlds', createProxyMiddleware({
-  target: 'http://world-service:3000',
-  changeOrigin: true
-}));
-
-app.use('/docker', createProxyMiddleware({
-  target: 'http://host.docker.internal:5050',
-  changeOrigin: true
-}));
-
-// Error 404
+// Ruta fallback
 app.use((req, res) => {
   res.status(404).json({ message: 'Ruta no encontrada en el API Gateway' });
 });
 
-// Conexión a Mongo para logs
+// Conexión MongoDB
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
     console.log('✅ Conectado a MongoDB para logs');
@@ -44,5 +51,5 @@ mongoose.connect(process.env.MONGO_URI)
     app.listen(PORT, () => console.log(`🌐 API Gateway escuchando en el puerto ${PORT} externo 4000`));
   })
   .catch((err) => {
-    console.error('❌ Error al conectar a MongoDB para logs:', err.message);
+    console.error('❌ Error al conectar a MongoDB:', err.message);
   });
