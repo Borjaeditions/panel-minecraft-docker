@@ -1,17 +1,16 @@
-FROM node:20
+# Dockerfile (auth-service)
 
+FROM node:20
 WORKDIR /app
 
-# Copia solo el package.json (sin lock)
-COPY package.json ./
+COPY package*.json ./
 
-# Instala las dependencias (siempre limpias)
+# Agrega esto justo antes del npm install
+RUN npm config set registry https://registry.npmmirror.com
+
 RUN npm install
 
-# Luego copia todo el proyecto
 COPY . .
 
-# Exponer el puerto si aplica
 EXPOSE 3000
-
 CMD ["npm", "run", "start"]
