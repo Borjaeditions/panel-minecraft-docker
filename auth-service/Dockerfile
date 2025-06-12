@@ -5,7 +5,6 @@ WORKDIR /app
 
 COPY package*.json ./
 
-# Agrega esto justo antes del npm install
 RUN npm config set registry https://registry.npmmirror.com
 
 RUN npm install
